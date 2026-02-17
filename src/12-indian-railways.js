@@ -45,5 +45,71 @@
  *   // => [{ name: "Rahul", trainNumber: "12345", class: "sleeper", status: "confirmed" }]
  */
 export function railwayReservation(passengers, trains) {
-  // Your code here
+  if (
+    !Array.isArray(passengers) || passengers.length === 0 ||
+    !Array.isArray(trains) || trains.length === 0
+  ) {
+    return [];
+  }
+
+  let result = [];
+
+  for (let i = 0; i < passengers.length; i++) {
+    const passenger = passengers[i];
+
+    let trainFound = false;
+
+    for (let j = 0; j < trains.length; j++) {
+      const train = trains[j];
+
+      
+      if (train.trainNumber === passenger.trainNumber) {
+        trainFound = true;
+
+        if (train.seats[passenger.preferred] > 0) {
+          train.seats[passenger.preferred]--;
+          result.push({
+            name: passenger.name,
+            trainNumber: passenger.trainNumber,
+            class: passenger.preferred,
+            status: "confirmed"
+          });
+        }
+        else if (train.seats[passenger.fallback] > 0) {
+          train.seats[passenger.fallback]--;
+          result.push({
+            name: passenger.name,
+            trainNumber: passenger.trainNumber,
+            class: passenger.fallback,
+            status: "confirmed"
+          });
+        }
+        else {
+          result.push({
+            name: passenger.name,
+            trainNumber: passenger.trainNumber,
+            class: passenger.preferred,
+            status: "waitlisted"
+          });
+        }
+        break; 
+      }
+    }
+
+    
+    if (!trainFound) {
+      result.push({
+        name: passenger.name,
+        trainNumber: passenger.trainNumber,
+        class: null,
+        status: "train_not_found"
+      });
+    }
+  }
+
+  return result;   // ✔ important
 }
+
+console.log( railwayReservation(
+     [{ name: "Rahul", trainNumber: "12345", preferred: "ac3", fallback: "sleeper" }],
+     [{ trainNumber: "12345", name: "Rajdhani", seats: { sleeper: 5, ac3: 0, ac2: 1, ac1: 0}}]))

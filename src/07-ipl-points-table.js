@@ -38,4 +38,60 @@
  */
 export function iplPointsTable(matches) {
   // Your code here
+  if(!Array.isArray(matches) || matches.length === 0){
+    return [];
+  }
+
+  let table = {}; //this is object accumulator
+
+  for(let i = 0;i< matches.length;i++){
+    let m = matches[i];
+    let t1 = m.team1;
+    let t2 = m.team2;
+    
+    if(!table[t1]){
+      table[t1] = {team: t1, played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0 };
+    }
+    if(!table[t2]){
+        table[t2] = {team: t2, played: 0, won: 0, lost: 0, tied: 0, noResult: 0, points: 0 };
+    }
+    
+    table[t1].played++;
+    table[t2].played++;
+    if(m.result.toLowerCase() === "win"){
+      let w = m.winner;
+      let loser = (w === t1)? t2:t1;
+      table[w].won++;
+      table[w].points +=2;
+      table[loser].lost++;
+    }else if(m.result.toLowerCase() === "tie"){
+      table[t1].tied++;
+      table[t2].tied++;
+      table[t1].points += 1;
+      table[t2].points += 1;
+
+    } else if (m.result.toLowerCase() === "no_result") {
+      table[t1].noResult++;
+      table[t2].noResult++;
+      table[t1].points += 1;
+      table[t2].points += 1;
+    }
+  }
+  let result = Object.values(table);
+
+  console.log(result[0]['points'])
+  //new method for sorting
+  result.sort((a,b) => {
+    if(b.points !== a.points){
+      return b.points - a.points;
+      
+    }else{
+      return a.team.localeCompare(b.team);  //function used for alphabetical checking
+    }
+  });
+  return result;
+  // console.log(table)
+
 }
+console.log(iplPointsTable([
+    { team1: "CSK", team2: "MI", result: "win", winner: "CSK" },  { team1: "RCB", team2: "CSK", result: "tie" },]))

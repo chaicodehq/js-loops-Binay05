@@ -39,4 +39,53 @@
  */
 export function diwaliLightsPlan(lightStrings, budget) {
   // Your code here
+  if(!Array.isArray(lightStrings) || lightStrings.length === 0 ||typeof budget !== "number" || budget <= 0){
+    return {selected: [], totalLength: 0, totalCost: 0};
+  }
+  let finaList = [];
+  let totalcost = 0;
+  let totalLength = 0;
+  
+  //making the finalList
+  for(let i of lightStrings){
+    let colorName = i.color;
+    let cost = 0;
+    let len = i.length;
+    // console.log(colorName);
+    if(colorName.toLowerCase() === "golden"){
+      cost =  len * 50;
+      totalcost += cost;
+      totalLength += len;
+    }else if(colorName.toLowerCase() === "multicolor"){
+      cost = len * 40;
+      totalcost += cost;
+      totalLength += len;
+    }else if(colorName.toLowerCase() === "white"){
+      cost = len * 30;
+      totalcost += cost;
+      totalLength += len;
+    }else{
+      cost = len * 35;
+      totalcost += cost;
+      totalLength += len;
+    }
+    finaList.push({color: colorName, length:i.length,cost: cost});
+  }
+ 
+
+  // while loop
+
+  while(totalcost > budget){
+    let lastItem = finaList[finaList.length - 1];
+    finaList.pop();
+    totalcost = totalcost - lastItem.cost;
+    totalLength = totalLength - lastItem.length;
+
+  }
+  // console.log(finaList)
+  // console.log(totalcost)
+  return {selected:finaList,totalLength:totalLength , totalCost : totalcost }
 }
+
+// console.log(diwaliLightsPlan(
+//       [{ color: "golden", length: 5 }, { color: "white", length: 10 }, { color: "multicolor", length: 3 }], 400   ))
